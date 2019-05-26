@@ -1,3 +1,7 @@
+[![version](https://img.shields.io/badge/package-download-brightgreen.svg)](https://github.com/jonHuffman/UnifiedFontSize/raw/master/UnityPackages/UnifiedTextSize_v1.1.unitypackage)
+[![version](https://img.shields.io/badge/version-v1.0-blue.svg)](https://github.com/jonHuffman/UPool)
+[![license](https://img.shields.io/badge/license-MIT-red.svg)](https://github.com/jonHuffman/UPool/blob/master/LICENSE.md)  
+
 # UnifiedFontSize
 This is a small Component for Unity designed to allow you to link multiple Text objects and have them share a best fitted font size. On Start() the component will scan the linked Text components and determine the smallest font size of the set. It then applies this value to the entire collection, resulting in a more uniform look.
 
