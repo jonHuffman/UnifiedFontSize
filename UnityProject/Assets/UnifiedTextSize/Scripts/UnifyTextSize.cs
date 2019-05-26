@@ -30,6 +30,8 @@ namespace UnifiedTextSize
 {
     public class UnifyTextSize : MonoBehaviour
     {
+        [SerializeField, Tooltip("The absolute minimum font size your TextComponents can have")]
+        private int minFontSize = 8;
         [SerializeField, Tooltip("The absolute maximum font size your TextComponents can have")]
         private int maxFontSize = 250;
         [SerializeField]
@@ -41,7 +43,7 @@ namespace UnifiedTextSize
 
         private void Awake()
         {
-            currentSmallestSize = int.MaxValue;
+            currentSmallestSize = maxFontSize;
         }
 
         private void Start()
@@ -73,7 +75,7 @@ namespace UnifiedTextSize
         /// </remarks>
         public void RecalculateBestFitImmediately()
         {
-            ResetMaxFontSize();
+            ResetFontSizes();
 
             Canvas.ForceUpdateCanvases();
 
@@ -85,17 +87,18 @@ namespace UnifiedTextSize
         /// TextComponents will have their font size lowered if need be.
         /// A larger overall font size may be supported, <see cref="RecalculateBestFit"/> if you wish to calculate this.
         /// </summary>
-        public void AddText(Text newComponent)
+        public void AddText(Text newTextComponent)
         {
-            Debug.AssertFormat(!textComponents.Contains(newComponent), "Adding duplicate entry for Text component {0}. You should avoid this.", newComponent.gameObject.name);
-
-            textComponents.Add(newComponent);
+            Debug.AssertFormat(!textComponents.Contains(newTextComponent), "Adding duplicate entry for Text component {0}. You should avoid this.", newTextComponent.gameObject.name);
+            
+            SetSizeConstraints(newTextComponent, currentSmallestSize);
+            textComponents.Add(newTextComponent);
             UpdateFontSizes();
         }
 
         private IEnumerator RecalculateBestFitOverFrames()
         {
-            ResetMaxFontSize();
+            ResetFontSizes();
 
             yield return null;
 
@@ -104,12 +107,15 @@ namespace UnifiedTextSize
             recalculateBestFitCoroutine = null;
         }
 
-        private void ResetMaxFontSize()
+        private void ResetFontSizes()
         {
             foreach (Text text in textComponents)
             {
+                text.resizeTextMinSize = minFontSize;
                 text.resizeTextMaxSize = maxFontSize;
             }
+            
+            currentSmallestSize = maxFontSize;
         }
 
         private void UpdateFontSizes()
@@ -123,13 +129,15 @@ namespace UnifiedTextSize
 
             foreach (Text text in textComponents)
             {
-                text.resizeTextMaxSize = smallestFontSize;
+                SetSizeConstraints(text, smallestFontSize);
             }
+
+            currentSmallestSize = smallestFontSize;
         }
 
         private int GetSmallestFontSize()
         {
-            int smallestFontSize = int.MaxValue;
+            int smallestFontSize = maxFontSize;
             
             foreach (Text text in textComponents)
             {
@@ -137,11 +145,21 @@ namespace UnifiedTextSize
 
                 if (smallestFontSize > fontSize)
                 {
-                    smallestFontSize = fontSize;
+                    smallestFontSize = fontSize >= minFontSize ? fontSize : minFontSize;
                 }
             }
 
             return smallestFontSize;
+        }
+
+        private static void SetSizeConstraints(Text text, int smallestFontSize)
+        {
+            text.resizeTextMaxSize = smallestFontSize;
+
+            if (smallestFontSize < text.resizeTextMinSize)
+            {
+                text.resizeTextMinSize = smallestFontSize;
+            }
         }
     }
 }
