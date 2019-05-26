@@ -5,15 +5,19 @@ This is a small Component for Unity designed to allow you to link multiple Text 
 
 ## Linking Text Objects
 The UnifyTextSize component needs a reference to all the Text components that you wish it to affect. The easiest way to accomplish this is to simply drag and drop the Text objects into the List found in the UnifyTextSize component.  
-For organization purposes, it is recommended that the UnifyTextSize component be attanched to a GameObject other than those it affects.
+
+For organization purposes, it is recommended that the UnifyTextSize component be attanched to a GameObject other than those it affects.  
+
 ![How to Link](ReadMeImages/LinkingTextObjects.gif?raw=true)
 
 ## Adding Text Object at Runtime
 It is also possible to add Text components to the List tracked by the UnifyTextSize component at runtime. With a reference to the component simply call the AddText(Text) method passing in the new Text object that you wish tracked.  
+
 When a new Text object is added to UnifyTextSize's List, it will automatically check to see if it has a smaller font size than the existing group, and will update itself and the group accordingly.
 
 ## Complete Recalculation of Best Fit
 In the event that you are changing the content of your Text components at runtime you will likely wish to re-calculate the group's font size. If you do not and your new values allow for a larger collective font size, they will not update and instead will use the previously calculated size.  
+
 Recalculating the group's font size can be done by calling either the `RecalculateBestFit()` or `RecalculateBestFitImmediately()` method.  
 
         private void Recalculate()
