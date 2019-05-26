@@ -34,6 +34,9 @@ namespace UnifiedTextSize
         private int minFontSize = 8;
         [SerializeField, Tooltip("The absolute maximum font size your TextComponents can have")]
         private int maxFontSize = 250;
+
+        [SerializeField]
+        private bool unifyImmediately = true;
         [SerializeField]
         private List<Text> textComponents;
 
@@ -48,7 +51,14 @@ namespace UnifiedTextSize
 
         private void Start()
         {
-            RecalculateBestFitImmediately();
+            if (unifyImmediately)
+            {
+                RecalculateBestFitImmediately();
+            }
+            else
+            {
+                RecalculateBestFit();
+            }
         }
 
         /// <summary>
@@ -70,7 +80,7 @@ namespace UnifiedTextSize
         /// Due to a Canvas rebuild requirement this is an expensive operation.
         /// </summary>
         /// <remarks>
-        /// Currently <see cref="LayoutRebuilder"/> does do cause font size to be recalculated. Its possible this will change in future Unity versions.
+        /// Currently <see cref="LayoutRebuilder"/> does not cause font size to be recalculated. Its possible this will change in future Unity versions.
         /// Last tested in Unity 2018.2.15
         /// </remarks>
         public void RecalculateBestFitImmediately()
@@ -90,7 +100,7 @@ namespace UnifiedTextSize
         public void AddText(Text newTextComponent)
         {
             Debug.AssertFormat(!textComponents.Contains(newTextComponent), "Adding duplicate entry for Text component {0}. You should avoid this.", newTextComponent.gameObject.name);
-            
+
             SetSizeConstraints(newTextComponent, currentSmallestSize);
             textComponents.Add(newTextComponent);
             UpdateFontSizes();
@@ -114,7 +124,7 @@ namespace UnifiedTextSize
                 text.resizeTextMinSize = minFontSize;
                 text.resizeTextMaxSize = maxFontSize;
             }
-            
+
             currentSmallestSize = maxFontSize;
         }
 
@@ -138,7 +148,7 @@ namespace UnifiedTextSize
         private int GetSmallestFontSize()
         {
             int smallestFontSize = maxFontSize;
-            
+
             foreach (Text text in textComponents)
             {
                 int fontSize = text.GetCurrentFontSize();

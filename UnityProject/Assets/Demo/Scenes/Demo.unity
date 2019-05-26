@@ -817,6 +817,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minFontSize: 8
   maxFontSize: 100
+  unifyImmediately: 1
   textComponents:
   - {fileID: 2050465118}
   - {fileID: 1900250619}

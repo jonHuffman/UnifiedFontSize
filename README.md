@@ -14,9 +14,20 @@ When a new Text object is added to UnifyTextSize's List, it will automatically c
 
 ## Complete Recalculation of Best Fit
 In the event that you are changing the content of your Text components at runtime you will likely wish to re-calculate the group's font size. If you do not and your new values allow for a larger collective font size, they will not update and instead will use the previously calculated size.  
-Recalculating the group's font size can be done by calling either the RecalculateBestFit() or RecalculateBestFitImmediately() method.
+Recalculating the group's font size can be done by calling either the `RecalculateBestFit()` or `RecalculateBestFitImmediately()` method.  
+
+        private void Recalculate()
+        {
+            UnifyTextSize unifyTextSizeController = GetComponent<UnifyTextSize>();
+            unifyTextSizeController.RecalculateBestFit();
+        }
 
 ## RecalculateBestFit vs RecalculateBestFitImmediately
-In order to determine the best fit value of the group of Text component's, Unity needs to update the Canvas. Canvas recalcuation can be an expensive operation and as such we typically want to avoid it as often as possible. To this end, UnifyTextSize gives you the options of either RecalculateBestFit vs RecalculateBestFitImmediately.
-* RecalculateBestFit will run across two frames, allowing for Unity to naturally update the Canvas during its frame cycle. The benefit is that you do not incur an additional Canvas update. The disadvantage is that for a frame your text sizes will not be uniform.  
-* RecalculateBestFitImmediately calculates the new font size immediately. The benefit is that the new size is applied in a single frame, meaning the user will never see a non-uniform size. The disadvantage is that you incur a second Canvas update in the frame that this is called.  
+In order to determine the best fit value of the group of Text component's, Unity needs to update the Canvas. Canvas recalcuation can be an expensive operation and as such we typically want to avoid it as often as possible. To this end, UnifyTextSize gives you the options of either `RecalculateBestFit()` or `RecalculateBestFitImmediately()`.
+* **RecalculateBestFit** will run across two frames, allowing for Unity to naturally update the Canvas during its frame cycle. The benefit is that you do not incur an additional Canvas update. The disadvantage is that for a frame your text sizes will not be uniform.  
+* **RecalculateBestFitImmediately** calculates the new font size immediately. The benefit is that the new size is applied in a single frame, meaning the user will never see a non-uniform size. The disadvantage is that you incur a second Canvas update in the frame that this is called.  
+
+> Currently UnityEngine's `LayoutRebuilder` does not cause font size to be recalculated. Its possible this will change in future Unity versions. (Last tested in Unity 2018.2.15)
+
+### Choosing a Recalculation option for Initialization
+UnifiedFontSize runs a size recalculation in the Start() method of the component in order to unify the font size of all Text objects immedaitely. By default it does so through the `RecalculateBestFitImmediately()` method. In the inspector you can instead uncheck the *Unify Immediately* toggle on the UnifyTextSize component and it will instead use `RecalculateBestFit()`.
