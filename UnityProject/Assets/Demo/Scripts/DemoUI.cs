@@ -32,7 +32,7 @@ namespace UnifiedTextSize.Demo.Scripts
 
         private void OnAddTextClicked()
         {
-            unifyTextSizeController.AddText(textToAdd);
+            unifyTextSizeController.AddTextComponent(textToAdd);
         }
     }
 }

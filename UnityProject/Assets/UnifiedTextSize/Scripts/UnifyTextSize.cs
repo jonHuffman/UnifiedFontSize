@@ -93,17 +93,35 @@ namespace UnifiedTextSize
         }
 
         /// <summary>
-        /// Adds a TextComponent to have its font size unified with others controlled by this component.
+        /// Adds a Text Component to have its font size unified with others controlled by this component.
         /// TextComponents will have their font size lowered if need be.
         /// A larger overall font size may be supported, <see cref="RecalculateBestFit"/> if you wish to calculate this.
         /// </summary>
-        public void AddText(Text newTextComponent)
+        public void AddTextComponent(Text newTextComponent)
         {
             Debug.AssertFormat(!textComponents.Contains(newTextComponent), "Adding duplicate entry for Text component {0}. You should avoid this.", newTextComponent.gameObject.name);
 
             SetSizeConstraints(newTextComponent, currentSmallestSize);
             textComponents.Add(newTextComponent);
             UpdateFontSizes();
+        }
+
+        /// <summary>
+        /// Removes a Text component from the list of components managed by UnifyTextSize
+        /// </summary>
+        /// <returns>True if successfull removed, false if failed to remove or item not found</returns>
+        public bool RemoveTextComponent(Text componentToRemove)
+        {
+            return textComponents.Remove(componentToRemove);
+        }
+
+        /// <summary>
+        /// Removes all Text Components that are being managed by the unifier.
+        /// They will retain their modified "resizeText" size settings, so it is up to you to reset them to values you find acceptable.  
+        /// </summary>
+        public void ClearManagedTextComponents()
+        {
+            textComponents.Clear();
         }
 
         private IEnumerator RecalculateBestFitOverFrames()
